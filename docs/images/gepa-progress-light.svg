@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" font-family="system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="760" height="400" rx="8" fill="#fcfcfb"/>
+  <text x="16.0" y="28.0" fill="#0b0b0b" font-size="15" text-anchor="start" font-weight="600">Accuracy on the 300-question selection subset</text>
+  <text x="16.0" y="48.0" fill="#52514e" font-size="12" text-anchor="start" font-weight="normal">Dots are accepted candidates; lines are the best so far. Ringed dots were selected.</text>
+  <line x1="56" x2="610" y1="348.0" y2="348.0" stroke="#e1e0d9"/>
+  <text x="48.0" y="352.0" fill="#6f6d68" font-size="11" text-anchor="end" font-weight="normal">60%</text>
+  <line x1="56" x2="610" y1="280.0" y2="280.0" stroke="#e1e0d9"/>
+  <text x="48.0" y="284.0" fill="#6f6d68" font-size="11" text-anchor="end" font-weight="normal">64%</text>
+  <line x1="56" x2="610" y1="212.0" y2="212.0" stroke="#e1e0d9"/>
+  <text x="48.0" y="216.0" fill="#6f6d68" font-size="11" text-anchor="end" font-weight="normal">68%</text>
+  <line x1="56" x2="610" y1="144.0" y2="144.0" stroke="#e1e0d9"/>
+  <text x="48.0" y="148.0" fill="#6f6d68" font-size="11" text-anchor="end" font-weight="normal">72%</text>
+  <line x1="56" x2="610" y1="76.0" y2="76.0" stroke="#e1e0d9"/>
+  <text x="48.0" y="80.0" fill="#6f6d68" font-size="11" text-anchor="end" font-weight="normal">76%</text>
+  <line x1="56" x2="610" y1="348.0" y2="348.0" stroke="#c3c2b7"/>
+  <text x="56.0" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">0</text>
+  <text x="111.4" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">2</text>
+  <text x="166.8" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">4</text>
+  <text x="222.2" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">6</text>
+  <text x="277.6" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">8</text>
+  <text x="333.0" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">10</text>
+  <text x="388.4" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">12</text>
+  <text x="443.8" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">14</text>
+  <text x="499.2" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">16</text>
+  <text x="554.6" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">18</text>
+  <text x="610.0" y="366.0" fill="#6f6d68" font-size="11" text-anchor="middle" font-weight="normal">20</text>
+  <text x="333.0" y="390.0" fill="#52514e" font-size="12" text-anchor="middle" font-weight="normal">GEPA iteration</text>
+  <path d="M56.0,268.7H83.7V246.0H139.1V229.0H277.6V200.7H443.8V183.7H582.3" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="56.0" cy="268.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="83.7" cy="246.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="111.4" cy="246.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="139.1" cy="229.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="194.5" cy="246.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="222.2" cy="280.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="249.9" cy="240.3" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="277.6" cy="200.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="305.3" cy="331.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="333.0" cy="257.3" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="360.7" cy="274.3" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="388.4" cy="240.3" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="416.1" cy="268.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="443.8" cy="183.7" r="8" fill="none" stroke="#2a78d6" stroke-width="2"/>
+  <circle cx="443.8" cy="183.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="471.5" cy="206.3" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="526.9" cy="291.3" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="554.6" cy="251.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="582.3" cy="274.3" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <path d="M56.0,268.7H111.4V144.0H166.8V127.0H471.5V93.0H610.0" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="56.0" cy="268.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="111.4" cy="144.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="139.1" cy="246.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="166.8" cy="127.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="222.2" cy="149.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="277.6" cy="166.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="305.3" cy="240.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="333.0" cy="155.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="360.7" cy="161.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="388.4" cy="138.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="416.1" cy="149.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="443.8" cy="144.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="471.5" cy="93.0" r="8" fill="none" stroke="#eb6834" stroke-width="2"/>
+  <circle cx="471.5" cy="93.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="499.2" cy="161.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="526.9" cy="178.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="554.6" cy="98.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="582.3" cy="110.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="610.0" cy="98.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <text x="592.3" y="181.7" fill="#0b0b0b" font-size="12" text-anchor="start" font-weight="600">Query penalty 0.01</text>
+  <text x="592.3" y="197.7" fill="#52514e" font-size="12" text-anchor="start" font-weight="normal">69.7% best</text>
+  <text x="620.0" y="91.0" fill="#0b0b0b" font-size="12" text-anchor="start" font-weight="600">Accuracy only</text>
+  <text x="620.0" y="107.0" fill="#52514e" font-size="12" text-anchor="start" font-weight="normal">75.0% best</text>
+  <text x="64.0" y="288.6" fill="#52514e" font-size="12" text-anchor="start" font-weight="normal">Seed 64.7%</text>
+  <line x1="320" x2="340" y1="62" y2="62" stroke="#2a78d6" stroke-width="2"/>
+  <circle cx="330" cy="62" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <text x="348.0" y="66.0" fill="#52514e" font-size="12" text-anchor="start" font-weight="normal">Query penalty 0.01</text>
+  <line x1="470" x2="490" y1="62" y2="62" stroke="#eb6834" stroke-width="2"/>
+  <circle cx="480" cy="62" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+  <text x="498.0" y="66.0" fill="#52514e" font-size="12" text-anchor="start" font-weight="normal">Accuracy only</text>
+</svg>
