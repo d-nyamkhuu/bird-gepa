@@ -111,6 +111,24 @@ def source_fingerprint(
     }
 
 
+@dataclass(frozen=True)
+class Sources:
+    """Frozen split records, the databases they refer to, and a fingerprint of both."""
+
+    train: list[BirdRecord]
+    validation: list[BirdRecord]
+    databases: dict[str, Database]
+    fingerprint: dict
+
+
+def read_sources(prepared_dir: Path, databases_dir: Path) -> Sources:
+    """Read the frozen splits and locate their databases, without executing SQL."""
+    train, validation = read_splits(prepared_dir)
+    databases = locate_databases(train + validation, databases_dir)
+    fingerprint = source_fingerprint(train, validation, databases)
+    return Sources(train, validation, databases, fingerprint)
+
+
 def save_examples(
     path: Path,
     train: list[dspy.Example],
@@ -159,8 +177,6 @@ class PreparedData:
     @classmethod
     def load(cls, prepared_dir: Path, databases_dir: Path) -> "PreparedData":
         """Load saved examples, checking they still match their source records and files."""
-        train_records, validation_records = read_splits(prepared_dir)
-        databases = locate_databases(train_records + validation_records, databases_dir)
-        fingerprint = source_fingerprint(train_records, validation_records, databases)
-        train, validation = load_examples(prepared_dir / EXAMPLES_FILE, fingerprint)
-        return cls(train=train, validation=validation, databases=databases)
+        sources = read_sources(prepared_dir, databases_dir)
+        train, validation = load_examples(prepared_dir / EXAMPLES_FILE, sources.fingerprint)
+        return cls(train=train, validation=validation, databases=sources.databases)

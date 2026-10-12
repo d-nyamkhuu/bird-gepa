@@ -117,25 +117,6 @@ class Database:
 def query_tool(databases: dict[str, Database]) -> Callable[..., QueryResult]:
     """Build the `query_database` tool. Flex exposes it by this name and docstring."""
 
-    def preview(db_id: str, sql: str, parameters: list | None, row_limit: int) -> QueryResult:
-        if db_id not in databases:
-            return {"rows": [], "truncated": False, "error": "Unknown database."}
-        if type(row_limit) is not int or not 1 <= row_limit <= MAX_ROW_LIMIT:
-            return {
-                "rows": [],
-                "truncated": False,
-                "error": f"row_limit must be 1..{MAX_ROW_LIMIT}.",
-            }
-        rows, error = databases[db_id].query(sql, tuple(parameters or []), limit=row_limit + 1)
-        return {
-            "rows": [
-                [encode_blob(value) if isinstance(value, bytes) else value for value in row]
-                for row in rows[:row_limit]
-            ],
-            "truncated": len(rows) > row_limit,
-            "error": error,
-        }
-
     def query_database(
         db_id: str, sql: str, parameters: list | None = None, row_limit: int = 20
     ) -> QueryResult:
@@ -145,7 +126,18 @@ def query_tool(databases: dict[str, Database]) -> Callable[..., QueryResult]:
         BLOB cells are encoded as {"blob_hex": "..."}. No gold answers are available.
         """
         started = time.perf_counter()
-        result = preview(db_id, sql, parameters, row_limit)
+        rows: list[tuple] = []
+        truncated = False
+        if db_id not in databases:
+            error: str | None = "Unknown database."
+        elif type(row_limit) is not int or not 1 <= row_limit <= MAX_ROW_LIMIT:
+            error = f"row_limit must be 1..{MAX_ROW_LIMIT}."
+        else:
+            # Fetch one extra row to tell whether the result was truncated.
+            rows, error = databases[db_id].query(sql, tuple(parameters or []), limit=row_limit + 1)
+            rows, truncated = rows[:row_limit], len(rows) > row_limit
+
+        # Rejected attempts are traced too, since they still cost the solver a query.
         trace = _current_trace.get()
         if trace is not None:
             trace.records.append(
@@ -153,12 +145,19 @@ def query_tool(databases: dict[str, Database]) -> Callable[..., QueryResult]:
                     db_id=db_id,
                     sql=sql,
                     parameters=parameters,
-                    row_count=len(result["rows"]),
-                    truncated=result["truncated"],
-                    error=result["error"],
+                    row_count=len(rows),
+                    truncated=truncated,
+                    error=error,
                     seconds=time.perf_counter() - started,
                 )
             )
-        return result
+        return {
+            "rows": [
+                [encode_blob(value) if isinstance(value, bytes) else value for value in row]
+                for row in rows
+            ],
+            "truncated": truncated,
+            "error": error,
+        }
 
     return query_database

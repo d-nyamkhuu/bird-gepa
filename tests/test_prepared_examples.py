@@ -5,13 +5,7 @@ import sqlite3
 
 import pytest
 
-from bird_gepa.data import (
-    load_examples,
-    locate_databases,
-    read_splits,
-    save_examples,
-    source_fingerprint,
-)
+from bird_gepa.data import load_examples, read_sources, save_examples
 from bird_gepa.prepare import prepare_examples
 
 
@@ -26,8 +20,7 @@ def prepared(tmp_path, demo):
 
 
 def fingerprint(prepared):
-    train, validation = read_splits(prepared)
-    return source_fingerprint(train, validation, locate_databases(train + validation, prepared))
+    return read_sources(prepared, prepared).fingerprint
 
 
 def test_preparation_preserves_full_results_types_and_input_boundaries(prepared, monkeypatch):

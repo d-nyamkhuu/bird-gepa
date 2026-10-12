@@ -5,7 +5,7 @@ import subprocess
 import zipfile
 from pathlib import Path
 
-from bird_gepa.data import load_examples, locate_databases, source_fingerprint
+from bird_gepa.data import load_examples, read_sources
 from bird_gepa.prepare import prepare, split_databases
 
 
@@ -111,10 +111,8 @@ def test_prepare_splits_databases_and_preserves_test_records_and_sql(tmp_path):
         "test.json",
         "dspy_examples.json",
     }
-    databases = locate_databases(splits["train"] + splits["validation"], tmp_path / "databases")
     train_examples, validation_examples = load_examples(
-        output / "dspy_examples.json",
-        source_fingerprint(splits["train"], splits["validation"], databases),
+        output / "dspy_examples.json", read_sources(output, tmp_path / "databases").fingerprint
     )
     assert (len(train_examples), len(validation_examples)) == (80, 20)
     assert all(

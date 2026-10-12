@@ -8,7 +8,6 @@ import math
 import os
 import random
 import time
-from collections.abc import Iterator
 from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
@@ -89,17 +88,13 @@ def request_body(
     return body
 
 
-def iter_events(lines: Iterator[str]) -> Iterator[dict]:
-    """Yield the JSON payload of each server-sent event."""
-    for line in lines:
-        if line.startswith("data:") and line[5:].strip() != "[DONE]":
-            yield json.loads(line[5:])
-
-
 def read_stream(response: httpx.Response) -> dict:
     """Return the final response object from a Responses API event stream."""
     items: dict[int, dict] = {}
-    for event in iter_events(response.iter_lines()):
+    for line in response.iter_lines():
+        if not line.startswith("data:") or line[5:].strip() == "[DONE]":
+            continue
+        event = json.loads(line[5:])
         kind = event.get("type")
         if kind == "response.output_item.done":
             items[event["output_index"]] = event["item"]

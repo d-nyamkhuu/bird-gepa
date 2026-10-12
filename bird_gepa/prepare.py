@@ -7,30 +7,21 @@ import logging
 from collections import Counter
 from pathlib import Path
 
-from bird_gepa.data import (
-    EXAMPLES_FILE,
-    build_examples,
-    locate_databases,
-    read_splits,
-    save_examples,
-    source_fingerprint,
-)
+from bird_gepa.data import EXAMPLES_FILE, build_examples, read_sources, save_examples
 
 logger = logging.getLogger(__name__)
 
 
 def prepare_examples(prepared_dir: Path, databases_dir: Path) -> Path:
-    train_records, validation_records = read_splits(prepared_dir)
-    databases = locate_databases(train_records + validation_records, databases_dir)
-    fingerprint = source_fingerprint(train_records, validation_records, databases)
+    sources = read_sources(prepared_dir, databases_dir)
     examples = []
-    for name, records in (("train", train_records), ("validation", validation_records)):
+    for name, records in (("train", sources.train), ("validation", sources.validation)):
         logger.info("Preparing %s: %d reference queries", name, len(records))
-        examples.append(build_examples(records, databases))
+        examples.append(build_examples(records, sources.databases))
         logger.info("Prepared %s: %d examples", name, len(examples[-1]))
     train, validation = examples
     output = prepared_dir / EXAMPLES_FILE
-    save_examples(output, train, validation, fingerprint)
+    save_examples(output, train, validation, sources.fingerprint)
     logger.info("Saved %s", output)
     return output
 
