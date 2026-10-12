@@ -81,8 +81,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=defaults.seed)
     parser.add_argument("--task-model", default="codex/gpt-6-luna")
     parser.add_argument("--reflection-model", default="codex/gpt-6-astra")
-    parser.add_argument("--output", type=Path, default=Path("artifacts/bird-solver/solver.py"))
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("artifacts/bird-solver/solver.json"),
+        help="Optimized solver, in DSPy's JSON format",
+    )
     args = parser.parse_args(argv)
+    if args.output.suffix != ".json":
+        parser.error("--output must be a .json file.")
     if args.checkpoint_dir is None:
         args.checkpoint_dir = args.output.parent / "checkpoint"
     return args
@@ -117,8 +124,10 @@ def main() -> None:
         checkpoint_dir=args.checkpoint_dir,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(result.program.module_src)
-    logger.info("Solver source: %s", args.output)
+    # Save the solver without its Codex model. load_solver attaches a model on load.
+    result.program.reset()
+    result.program.save(args.output)
+    logger.info("Solver: %s", args.output)
 
 
 if __name__ == "__main__":

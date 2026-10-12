@@ -11,7 +11,7 @@ from dspy.evaluate import EvaluationResult
 from bird_gepa.data import sample_by_database
 from bird_gepa.database import Database, QueryTrace
 from bird_gepa.metric import METRIC_VERSION, ExecutionMetric
-from bird_gepa.program import SEED_SOURCE, build_program
+from bird_gepa.program import MAX_PREDICTOR_CALLS, SEED_SOURCE, build_program
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class SearchSettings:
     seed: int = 42
     reflection_minibatch_size: int = 8
     validation_size: int = 300
-    max_predictor_calls: int = 10
+    max_predictor_calls: int = MAX_PREDICTOR_CALLS
     query_penalty: float = 0.01
 
 

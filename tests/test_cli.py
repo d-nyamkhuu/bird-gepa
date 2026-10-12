@@ -3,7 +3,6 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from types import SimpleNamespace
 
 import dspy
 import httpx
@@ -14,7 +13,7 @@ from bird_gepa.codex import CodexLM
 from bird_gepa.database import Database
 from bird_gepa.optimization import EvaluationSummary, OptimizationResult, SearchSettings
 from bird_gepa.prepare import prepare_examples
-from bird_gepa.program import SEED_SOURCE
+from bird_gepa.program import SEED_SOURCE, build_program
 
 
 @pytest.fixture
@@ -36,7 +35,8 @@ def prepared(tmp_path, demo, monkeypatch):
 
 def optimization_result():
     summary = EvaluationSummary(total=4, correct=2, score=0.5, queries=4, query_seconds=0.1)
-    return OptimizationResult(SimpleNamespace(module_src=SEED_SOURCE), summary, summary)
+    program = build_program({}, dspy.LM("test/task"), max_predictor_calls=10)
+    return OptimizationResult(program, summary, summary)
 
 
 def test_module_entry_point():
@@ -67,7 +67,7 @@ def test_defaults_use_smaller_validation_and_larger_reflection_batches():
     assert args.max_predictor_calls == 10
     assert args.query_penalty == 0.01
     assert args.skip_baseline is False
-    assert args.output == Path("artifacts/bird-solver/solver.py")
+    assert args.output == Path("artifacts/bird-solver/solver.json")
     assert args.checkpoint_dir == args.output.parent / "checkpoint"
     assert args.task_model == "codex/gpt-6-luna"
     assert args.reflection_model == "codex/gpt-6-astra"
@@ -123,6 +123,12 @@ def test_counts_must_be_positive(option, count):
     assert exc.value.code == 2
 
 
+def test_output_must_be_json():
+    with pytest.raises(SystemExit) as exc:
+        parse_args(["--output", "solver.py"])
+    assert exc.value.code == 2
+
+
 def test_raw_data_option_is_rejected():
     with pytest.raises(SystemExit) as exc:
         parse_args(["--data", "questions.json"])
@@ -134,7 +140,7 @@ def test_raw_data_option_is_rejected():
 def test_main_passes_data_and_models_to_optimizer(
     tmp_path, prepared, monkeypatch, fail, skip_baseline
 ):
-    output = tmp_path / "run" / "solver.py"
+    output = tmp_path / "run" / "solver.json"
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -180,8 +186,10 @@ def test_main_passes_data_and_models_to_optimizer(
     assert calls == [True]
     assert output.exists() is not fail
     if not fail:
-        assert output.read_text() == SEED_SOURCE
-    assert not output.with_suffix(".json").exists()
+        saved = json.loads(output.read_text())
+        assert saved["module_src"] == SEED_SOURCE
+        # The model is attached when the solver is loaded, not saved with it.
+        assert saved["lm"] is None
 
 
 def test_metric_budget_is_checked_against_actual_validation_size(tmp_path, prepared, monkeypatch):
@@ -215,7 +223,7 @@ def test_metric_budget_uses_subset_size(tmp_path, prepared, monkeypatch):
             "--validation-size",
             "2",
             "--output",
-            str(tmp_path / "run/solver.py"),
+            str(tmp_path / "run/solver.json"),
         ],
     )
     calls = []
@@ -269,7 +277,7 @@ def test_models_send_responses_requests_without_storage(
             "--databases",
             str(tmp_path),
             "--output",
-            str(tmp_path / "run/solver.py"),
+            str(tmp_path / "run/solver.json"),
         ],
     )
     requests = []

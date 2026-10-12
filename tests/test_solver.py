@@ -8,10 +8,10 @@ import dspy
 import pytest
 from dspy.utils import DummyLM
 
-from bird_gepa import seed
+from bird_gepa import load_solver, seed
 from bird_gepa.data import build_examples, locate_databases
 from bird_gepa.database import query_tool
-from bird_gepa.program import SEED_SOURCE, SIGNATURE, TracedFlex
+from bird_gepa.program import SEED_SOURCE, SIGNATURE, TracedFlex, build_program
 
 
 def test_seed_declares_the_host_tool_signature():
@@ -112,3 +112,29 @@ class SQLSolver(dspy.Module):
             with pytest.raises(dspy.CodeInterpreterError, match="predictor-call budget.*10"):
                 solver(question="test")
     assert len(lm.history) == 10
+
+
+@pytest.mark.skipif(shutil.which("deno") is None, reason="Flex integration requires Deno")
+def test_loaded_solver_answers_without_extra_configuration(tmp_path, demo):
+    path = tmp_path / "solver.json"
+    program = build_program({}, DummyLM([]), max_predictor_calls=10)
+    program.reset()
+    program.save(path)
+    lm = DummyLM(
+        [
+            {"reasoning": "Count the larger values.", "sql": "SELECT 0"},
+            {
+                "reasoning": "The preview shows the draft is wrong.",
+                "sql": "SELECT COUNT(*) FROM numbers WHERE value > 1",
+            },
+        ],
+        adapter=dspy.JSONAdapter(),
+    )
+    solver = load_solver(path, tmp_path, lm)
+    databases = locate_databases(demo, tmp_path)
+    example = build_examples(demo, databases)[0]
+    prediction = solver(**example.inputs())
+    assert databases["demo"].query(prediction.sql) == ([(9,)], None)
+    assert prediction.query_trace.count == 3
+    assert len(lm.history) == 2
+    assert "JSON" in str(lm.history[0]["messages"])

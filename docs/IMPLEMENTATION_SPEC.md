@@ -1,9 +1,8 @@
 # Architecture
 
-The modules are small and take explicit arguments. `cli.py` sets up a run, but
-the solver and optimizer can also be called directly from Python.
-`optimization.optimize` takes separate training and validation examples, and the
-settings that affect scores as a `SearchSettings`. The CLI validates option
+The modules are small and take explicit arguments. `cli.py` sets up a run and
+calls `optimization.optimize`, which takes separate training and validation
+examples, and the settings that affect scores as a `SearchSettings`. The CLI validates option
 values, and `optimize` checks that both splits are nonempty and that the metric
 budget exceeds the validation subset.
 
@@ -11,7 +10,7 @@ budget exceeds the validation subset.
 
 1. [seed.py](../bird_gepa/seed.py): the SQL workflow GEPA edits.
 2. [database.py](../bird_gepa/database.py): the host database boundary.
-3. [program.py](../bird_gepa/program.py): the Flex program, with host measurements.
+3. [program.py](../bird_gepa/program.py): the Flex program, with host measurements, and the solver loader.
 4. [metric.py](../bird_gepa/metric.py): correctness, query cost and feedback.
 5. [optimization.py](../bird_gepa/optimization.py): evaluation, checkpoints and GEPA.
 6. [data.py](../bird_gepa/data.py): prepared splits and examples.
@@ -141,9 +140,22 @@ evaluations. GEPA still scores the seed on the subset.
 `optimize` returns an `OptimizationResult`: the optimized program, and an
 `EvaluationSummary` for each full-validation pass (`baseline` is `None` when
 skipped). A summary holds the correct count, the penalised score, query counts
-and query time; its `accuracy` is raw execution accuracy, in percent. The CLI
-writes the program's source to `--output`.
+and query time; its `accuracy` is raw execution accuracy, in percent.
 GEPA's own logs show the penalised score.
+
+## Saved solver
+
+The CLI saves the optimized program with DSPy's `save`, as JSON holding
+`module_src` and dependency versions. It clears the model first, so the file
+contains no model settings or credentials.
+
+`load_solver(path, databases, lm)`, exported from `bird_gepa`, follows DSPy's
+pattern for Flex. Tools and interpreter are runtime dependencies and are not
+serialized. It builds the same `TracedFlex` with a `query_database` tool over
+every `<db_id>/<db_id>.sqlite` in `databases`, loads the state and attaches
+`lm`. `max_predictor_calls` defaults to ten, as in the search.
+`TracedFlex.forward` sets the JSON adapter, so a loaded solver formats prompts
+exactly as it did when it was scored.
 
 ## Codex model
 
@@ -179,7 +191,7 @@ model uses 180 seconds and no cache.
 ```bash
 uv run python -m bird_gepa.cli \
   --prepared data/bird/prepared --databases data/bird/databases \
-  --output artifacts/bird-solver/solver.py
+  --output artifacts/bird-solver/solver.json
 ```
 
 | Option | Default |
@@ -195,7 +207,7 @@ uv run python -m bird_gepa.cli \
 | `--max-predictor-calls` | 10 |
 | `--query-penalty` | 0.01 |
 | `--seed` | 42, for optimization and the subset sample, not the data split |
-| `--output` | `artifacts/bird-solver/solver.py` |
+| `--output` | `artifacts/bird-solver/solver.json`, in DSPy's JSON format |
 | `--checkpoint-dir` | `<output directory>/checkpoint` |
 
 The CLI loads the prepared examples without running reference SQL, never loads

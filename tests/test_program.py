@@ -1,11 +1,13 @@
+import json
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 
 import dspy
 import pytest
 
+from bird_gepa import load_solver
 from bird_gepa.database import Database, QueryTrace, query_tool, trace_queries
-from bird_gepa.program import TracedFlex
+from bird_gepa.program import SEED_SOURCE, TracedFlex, build_program
 
 
 def test_parallel_forwards_keep_host_query_counts_separate(tmp_path, demo, monkeypatch):
@@ -48,3 +50,21 @@ def test_failed_forward_restores_the_enclosing_query_trace(tmp_path, demo, monke
         query("demo", "SELECT 2")
         assert outer.count == 1
         assert outer.records[0].sql == "SELECT 2"
+
+
+def test_saved_solver_loads_with_databases_and_model(tmp_path, demo):
+    path = tmp_path / "solver.json"
+    program = build_program({}, dspy.LM("test/task"), max_predictor_calls=10)
+    program.load_state({"module_src": SEED_SOURCE + "\n# optimized\n", "lm": None})
+    program.save(path)
+    assert json.loads(path.read_text())["lm"] is None
+    lm = dspy.LM("test/reuse")
+    solver = load_solver(path, tmp_path, lm)
+    assert solver.module_src == SEED_SOURCE + "\n# optimized\n"
+    assert solver.lm is lm
+    assert solver._max_predictor_calls == 10
+
+
+def test_load_solver_requires_databases(tmp_path):
+    with pytest.raises(ValueError, match="No <db_id>/<db_id>.sqlite databases"):
+        load_solver(tmp_path / "solver.json", tmp_path, dspy.LM("test/task"))

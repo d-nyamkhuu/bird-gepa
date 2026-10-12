@@ -113,7 +113,7 @@ That means **about 99.5% of the budget went to validation**. The budget slightly
 
 **7. Select and save the result**
 
-GEPA returns the candidate with the best aggregate score on the fixed 300-question subset. The CLI evaluates it again on all 1,376 validation questions and saves its source as `solver.py`. The CLI’s before-and-after evaluations are outside GEPA’s optimization budget. `--skip-baseline` omits the before evaluation and reports only the final full-validation score, without importing a historical baseline. There is no periodic full validation during search. The checkpoint records the selection and refuses incompatible resumes; the changed setup needs a fresh checkpoint directory.
+GEPA returns the candidate with the best aggregate score on the fixed 300-question subset. The CLI evaluates it again on all 1,376 validation questions and saves it as `solver.json`, which `bird_gepa.load_solver` restores. The CLI’s before-and-after evaluations are outside GEPA’s optimization budget. `--skip-baseline` omits the before evaluation and reports only the final full-validation score, without importing a historical baseline. There is no periodic full validation during search. The checkpoint records the selection and refuses incompatible resumes; the changed setup needs a fresh checkpoint directory.
 
 The selected solver improved validation accuracy by **8.21 percentage points**, fixing **147** previously wrong answers while losing **34** previously correct ones. The **500 test questions remained unused**. [Completed report](artifacts/overnight-20261005/report.txt) (local, not committed)
 
