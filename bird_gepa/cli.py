@@ -81,7 +81,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=defaults.seed)
     parser.add_argument("--task-model", default="codex/gpt-6-luna")
     parser.add_argument("--reflection-model", default="codex/gpt-6-astra")
-    parser.add_argument("--output", type=Path, default=Path("artifacts/bird-workflow/solver.py"))
+    parser.add_argument("--output", type=Path, default=Path("artifacts/bird-solver/solver.py"))
     args = parser.parse_args(argv)
     if args.checkpoint_dir is None:
         args.checkpoint_dir = args.output.parent / "checkpoint"

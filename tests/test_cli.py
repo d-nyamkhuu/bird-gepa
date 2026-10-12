@@ -67,6 +67,7 @@ def test_defaults_use_smaller_validation_and_larger_reflection_batches():
     assert args.max_predictor_calls == 10
     assert args.query_penalty == 0.01
     assert args.skip_baseline is False
+    assert args.output == Path("artifacts/bird-solver/solver.py")
     assert args.checkpoint_dir == args.output.parent / "checkpoint"
     assert args.task_model == "codex/gpt-6-luna"
     assert args.reflection_model == "codex/gpt-6-astra"

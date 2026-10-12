@@ -179,7 +179,7 @@ model uses 180 seconds and no cache.
 ```bash
 uv run python -m bird_gepa.cli \
   --prepared data/bird/prepared --databases data/bird/databases \
-  --output artifacts/bird-workflow/solver.py
+  --output artifacts/bird-solver/solver.py
 ```
 
 | Option | Default |
@@ -195,7 +195,7 @@ uv run python -m bird_gepa.cli \
 | `--max-predictor-calls` | 10 |
 | `--query-penalty` | 0.01 |
 | `--seed` | 42, for optimization and the subset sample, not the data split |
-| `--output` | `artifacts/bird-workflow/solver.py` |
+| `--output` | `artifacts/bird-solver/solver.py` |
 | `--checkpoint-dir` | `<output directory>/checkpoint` |
 
 The CLI loads the prepared examples without running reference SQL, never loads

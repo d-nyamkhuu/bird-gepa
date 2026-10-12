@@ -27,7 +27,7 @@ Model weights stay fixed.
 uv sync
 bash scripts/download_bird.sh
 uv run python -m bird_gepa.prepare
-uv run python -m bird_gepa.cli --output artifacts/bird-codex/solver.py
+uv run python -m bird_gepa.cli --output artifacts/bird-solver/solver.py
 ```
 
 The download is about 9.7 GB, and the extracted databases take about 34 GB.
@@ -47,7 +47,7 @@ bird_gepa/
 ├── database.py      # Read-only SQLite access and the query_database host tool
 ├── program.py       # The Flex program: seed source, host tool and query tracing
 ├── metric.py        # Execution accuracy, query penalty and feedback
-├── optimization.py  # Flex setup, GEPA and before/after evaluation
+├── optimization.py  # GEPA search, checkpoints and before/after evaluation
 ├── data.py          # Prepared splits and DSPy examples
 ├── codex.py         # A DSPy LM that sends requests with your Codex login
 ├── cli.py           # python -m bird_gepa.cli
@@ -57,7 +57,8 @@ scripts/
 tests/
 ```
 
-Start with [seed.py](bird_gepa/seed.py), then [optimization.py](bird_gepa/optimization.py).
+Start with [seed.py](bird_gepa/seed.py), then [program.py](bird_gepa/program.py) and
+[optimization.py](bird_gepa/optimization.py).
 
 ## Documentation
 
@@ -73,5 +74,6 @@ Start with [seed.py](bird_gepa/seed.py), then [optimization.py](bird_gepa/optimi
 uv run pytest -q
 uv run pytest -q -m "not slow"  # skip the end-to-end Flex and GEPA runs
 uv run ruff check .
+uv run ruff format --check .
 uv run mypy
 ```
