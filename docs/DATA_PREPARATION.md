@@ -24,8 +24,9 @@ uv run python -m bird_gepa.prepare --directory /path/to/bird
    evidence into an empty string. SQL is kept as published. Each record gets an
    `example_id`: the source row index for training, the published ID for mini-dev.
 2. **Split by database.** Sort the training databases by the SHA-256 of
-   `seed:db_id` and move the prefix whose question count is closest to
-   `--validation-fraction` (default 0.2) into validation. At least one database
+   `seed:db_id`, which gives a shuffled but repeatable order, and move the
+   prefix whose question count is closest to `--validation-fraction` (default
+   0.2) into validation. At least one database
    stays in training. Changing `--seed` changes which databases are held out.
 3. **Remove duplicates.** Two training records are duplicates when `db_id`,
    `question` and `evidence` match after collapsing whitespace and `casefold()`.
@@ -41,7 +42,7 @@ uv run python -m bird_gepa.prepare --directory /path/to/bird
 | File | Contents |
 | --- | --- |
 | `train.json`, `validation.json`, `test.json` | Cleaned records for each split |
-| `dspy_examples.json` | Training and validation examples with reference answers |
+| `dspy_examples.json` | Training and validation examples: the solver's inputs (`db_id`, `question`, `evidence`) with the reference SQL and its result rows, loaded as `dspy.Example` objects |
 
 BLOB cells are stored as `{"blob_hex": "..."}`, and the examples file is replaced
 atomically.

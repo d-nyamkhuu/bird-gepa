@@ -42,6 +42,40 @@ Here the language models are fixed. The thing being optimized is the **program**
 how the solver inspects the database, what it asks the model, and when it
 checks or repairs its own SQL.
 
+## DSPy in brief
+
+You don't need to know [DSPy](https://dspy.ai/) to follow this README, but a
+few of its terms come up throughout.
+
+- **Language model.** Two are used. The *task model* answers questions inside
+  the solver. The *reflection model* reads the results and rewrites the solver.
+- **Signature.** The inputs and outputs of one model call, written as a string
+  such as `"question, evidence, schema_text -> sql"`, plus optional
+  instructions. DSPy builds the prompt from it.
+- **Predictor.** An object that calls the model for a signature.
+  `dspy.Predict` asks for the outputs directly, and `dspy.ChainOfThought` asks
+  for step-by-step reasoning first. `dspy.ReAct` is an agent: it can call tools
+  such as `query_database` over several steps before it answers.
+- **Module.** A class built from predictors and plain Python, much like a
+  PyTorch module. Its `forward` method takes the inputs and returns a
+  `dspy.Prediction`, an object holding the outputs as attributes, such as
+  `prediction.sql`.
+- **Adapter.** Turns a signature and its inputs into prompt messages, and
+  parses the reply back into fields. This project uses DSPy's JSON adapter,
+  which asks the model to reply with a JSON object.
+- **Flex.** A module whose code is Python source held as a string, not a class
+  in your program. It runs that source in a sandbox: Pyodide, a WebAssembly
+  build of Python, running under Deno. Calls to predictors and tools are
+  passed back to the host, the Python process that runs the CLI.
+- **Tool.** A host function that the sandboxed code may call. Here the only
+  one is `query_database`.
+- **Metric.** A function that scores one prediction against the reference
+  answer. A *metric call* is one solver run on one question, plus its score.
+- **GEPA.** An optimizer, available in DSPy as `dspy.GEPA`. It doesn't tune
+  weights. It shows the reflection model the metric's scores and written
+  feedback, and asks for a better program. With Flex, it rewrites the
+  solver's whole source.
+
 ## Data
 
 | Set | Source | Questions | Databases | Used for |
@@ -211,9 +245,10 @@ print(prediction.query_trace.count)  # database queries the solver made
 `databases` is a directory of `<db_id>/<db_id>.sqlite` files, so the solver can
 answer questions about any database in it, including the mini-dev test
 databases. Any DSPy language model works in place of `CodexLM`.
-The solver runs in the Flex sandbox, so Deno is required. It uses the same JSON
-adapter and query limits as during optimization. The project is not an
-installable package, so run this from the repository root.
+The solver runs in the Flex sandbox, so Deno is required. It formats prompts
+with the same JSON adapter, and applies the same query limits, as during
+optimization. The project is not an installable package, so run this from the
+repository root.
 
 The file stores the solver source as `module_src`, next to DSPy's version
 metadata, and no model or credentials. To read the source:
@@ -245,7 +280,8 @@ penalty.
 
 These runs used an earlier seed that re-ran its final SQL before returning it,
 so it made four queries per question. The current [seed.py](bird_gepa/seed.py)
-drops that query.
+drops that query. GEPA checks the budget only between iterations, so both runs
+went slightly over 5,500 metric calls.
 
 ### Progress over the search
 
