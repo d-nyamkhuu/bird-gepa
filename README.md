@@ -7,8 +7,8 @@ This project tests that on [BIRD](https://bird-bench.github.io/). The solver is
 a plain Python class. [DSPy Flex](https://dspy.ai/current/api/modules/Flex/) runs
 its source in a sandbox, and [GEPA](https://dspy.ai/current/api/optimizers/GEPA/overview/)
 rewrites that source (helpers, prompts and control flow) from execution
-feedback. Model calls go through your ChatGPT Codex login, so no API key is
-needed.
+feedback. By default, model calls go through your ChatGPT Codex login, so no API
+key is needed. [Other models](#other-models) work too.
 
 On the 1,376-question validation split, a run went from **61.2% to 73.6%**
 execution accuracy. See [Results](#results) for what that number does and does
@@ -190,7 +190,7 @@ You will need:
 - Python 3.12 and [uv](https://docs.astral.sh/uv/)
 - [Deno](https://deno.com/), for the Flex sandbox
 - Bash, jq and unzip, for downloading data
-- A ChatGPT Codex login (`codex login`)
+- A ChatGPT Codex login (`codex login`), or an API key for [another model](#other-models)
 - About 50 GB of free disk space
 
 ```bash
@@ -219,6 +219,27 @@ Some timings, from runs on Codex:
   reliable. Twelve worked for a single evaluation pass.
 
 `--skip-baseline` skips the first full pass. The final pass always runs.
+
+### Other models
+
+Model names that start with `codex/` use your Codex login. Any other name is
+passed to [LiteLLM](https://docs.litellm.ai/docs/providers) through `dspy.LM`,
+which reads the provider's API key from the environment:
+
+```bash
+export OPENAI_API_KEY=...
+uv run python -m bird_gepa.cli \
+    --task-model openai/gpt-5-mini \
+    --reflection-model openai/gpt-5 \
+    --output artifacts/openai/solver.json
+```
+
+The same works for `anthropic/...`, `gemini/...`, or a local model such as
+`ollama_chat/...`. A default run makes about 8,000 solver runs with at least
+two model calls each, so on a paid API try a short run first, such as
+`--metric-calls 500 --validation-size 50 --skip-baseline`. The final pass
+still scores all 1,376 validation questions. Lower `--num-threads` if the
+provider rate limits.
 
 ### Using the optimized solver
 

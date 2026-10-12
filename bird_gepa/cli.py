@@ -28,6 +28,13 @@ def fraction(value: str) -> float:
     return number
 
 
+def language_model(model: str, *, timeout: float, cache: bool) -> dspy.BaseLM:
+    """Use the Codex login for `codex/` models, and LiteLLM through `dspy.LM` for any other."""
+    if model.startswith("codex/"):
+        return CodexLM(model, timeout=timeout, cache=cache)
+    return dspy.LM(model, timeout=timeout, cache=cache)
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     defaults = SearchSettings()
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
@@ -79,8 +86,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--checkpoint-dir", type=Path, help="Defaults to <output directory>/checkpoint"
     )
     parser.add_argument("--seed", type=int, default=defaults.seed)
-    parser.add_argument("--task-model", default="codex/gpt-6-luna")
-    parser.add_argument("--reflection-model", default="codex/gpt-6-astra")
+    parser.add_argument(
+        "--task-model",
+        default="codex/gpt-6-luna",
+        help="Model that runs the solver: codex/<model>, or any LiteLLM model name",
+    )
+    parser.add_argument(
+        "--reflection-model",
+        default="codex/gpt-6-astra",
+        help="Model that rewrites the solver: codex/<model>, or any LiteLLM model name",
+    )
     parser.add_argument(
         "--output",
         type=Path,
@@ -115,8 +130,8 @@ def main() -> None:
         data.train,
         data.validation,
         data.databases,
-        task_lm=CodexLM(args.task_model, timeout=90, cache=True),
-        reflection_lm=CodexLM(args.reflection_model, timeout=180, cache=False),
+        task_lm=language_model(args.task_model, timeout=90, cache=True),
+        reflection_lm=language_model(args.reflection_model, timeout=180, cache=False),
         settings=settings,
         max_metric_calls=args.metric_calls,
         num_threads=args.num_threads,

@@ -192,6 +192,39 @@ def test_main_passes_data_and_models_to_optimizer(
         assert saved["lm"] is None
 
 
+def test_other_models_use_litellm(tmp_path, prepared, monkeypatch):
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "bird_gepa.cli",
+            "--prepared",
+            str(prepared),
+            "--databases",
+            str(tmp_path),
+            "--output",
+            str(tmp_path / "run/solver.json"),
+            "--task-model",
+            "openai/gpt-test-mini",
+            "--reflection-model",
+            "anthropic/claude-test",
+        ],
+    )
+
+    def fake_optimize(train, validation, databases, *, task_lm, reflection_lm, **kwargs):
+        for lm in (task_lm, reflection_lm):
+            assert type(lm) is dspy.LM
+        assert task_lm.model == "openai/gpt-test-mini"
+        assert reflection_lm.model == "anthropic/claude-test"
+        assert task_lm.cache is True
+        assert task_lm.kwargs["timeout"] == 90
+        assert reflection_lm.cache is False
+        assert reflection_lm.kwargs["timeout"] == 180
+        return optimization_result()
+
+    monkeypatch.setattr("bird_gepa.cli.optimize", fake_optimize)
+    main()
+
+
 def test_metric_budget_is_checked_against_actual_validation_size(tmp_path, prepared, monkeypatch):
     monkeypatch.setattr(
         "sys.argv",
