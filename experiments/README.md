@@ -8,8 +8,6 @@ default settings. The only difference was the query penalty.
 | [query-penalty](query-penalty/) | 0.01 | 62.21% → 67.44% |
 | [accuracy-only](accuracy-only/) | 0 | 61.19% → 73.55% |
 
-[comparison.md](comparison.md) puts the two side by side.
-
 ## Files
 
 Each folder holds:
