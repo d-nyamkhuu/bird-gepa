@@ -1,0 +1,35 @@
+{
+  "status": "complete",
+  "finished_at": "2026-10-07T04:24:14+08:00",
+  "task_model": "codex/gpt-6-luna",
+  "reflection_model": "codex/gpt-6-astra",
+  "baseline": {
+    "execution_accuracy_percent": 62.21,
+    "correct": 856,
+    "questions": 1376,
+    "penalized_score": 0.6034,
+    "solver_queries": 5504,
+    "mean_solver_queries": 4.0,
+    "mean_query_tool_seconds": 0.374
+  },
+  "optimized": {
+    "execution_accuracy_percent": 67.44,
+    "correct": 928,
+    "questions": 1376,
+    "penalized_score": 0.6739,
+    "solver_queries": 1529,
+    "mean_solver_queries": 1.11,
+    "mean_query_tool_seconds": 0.007
+  },
+  "accuracy_gain_percentage_points": 5.23,
+  "additional_correct_answers": 72,
+  "solver_query_reduction_percent": 72.22,
+  "gepa_metric_call_budget": 5500,
+  "gepa_metric_calls": 5688,
+  "best_gepa_selection_score": 0.6961333333333334,
+  "transient_retry_attempts": 111,
+  "solver": "artifacts/bird-codex-20261007-001401/solver.py",
+  "solver_sha256": "46d3ff6ee57c4a3ba0bb37d5441e2680f4d4a7e56ad9ad85e4caf6c6c94f10b0",
+  "log": "artifacts/bird-codex-20261007-001401/run.supervised-02.log",
+  "fix": "Preserve redacted provider error details and retry transient Codex stream/server/transport failures, including server_is_overloaded."
+}

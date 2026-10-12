@@ -649,7 +649,8 @@ The complete source changes:
   train-filtered split, not BIRD dev. These scores are not comparable with the
   leaderboard.
 
-The run reports and solvers live under `artifacts/`, which is not committed.
+The run reports, logs, candidates and optimized solvers for both runs are in
+[experiments/](experiments/).
 
 ## Layout
 
@@ -664,6 +665,7 @@ bird_gepa/
 ├── codex.py         # A DSPy LM that sends requests with your Codex login
 ├── cli.py           # python -m bird_gepa.cli
 └── prepare.py       # python -m bird_gepa.prepare
+experiments/         # Logs, candidates and solvers from the two reported runs
 scripts/
 └── download_bird.sh # Download questions and databases
 tests/

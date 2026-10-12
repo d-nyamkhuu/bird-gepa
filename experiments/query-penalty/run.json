@@ -1,0 +1,43 @@
+{
+  "started_at": "2026-10-07T00:14:01.338186+08:00",
+  "command": [
+    ".venv/bin/python",
+    "-u",
+    "-m",
+    "bird_gepa.cli",
+    "--output",
+    "artifacts/bird-codex-20261007-001401/solver.py"
+  ],
+  "task_model": "codex/gpt-6-luna",
+  "reflection_model": "codex/gpt-6-astra",
+  "api": "https://chatgpt.com/backend-api/codex/responses",
+  "store": false,
+  "stream": true,
+  "task_max_tokens": 16384,
+  "reflection_max_tokens": 32768,
+  "metric_calls": 5500,
+  "validation_size": 300,
+  "num_threads": 8,
+  "reflection_minibatch_size": 8,
+  "max_predictor_calls": 10,
+  "query_penalty": 0.01,
+  "seed": 42,
+  "skip_baseline": false,
+  "active_log": "artifacts/bird-codex-20261007-001401/run.supervised-02.log",
+  "pid": 35984,
+  "initial_pid": 8354,
+  "restarted_at": "2026-10-07T00:41:06.070125+08:00",
+  "num_retries": 3,
+  "monitor_interval_seconds": 600,
+  "status": "complete",
+  "restart_history": [
+    {
+      "pid": 24439,
+      "log": "artifacts/bird-codex-20261007-001401/run.supervised.log",
+      "reason": "Added retry handling for the observed server_is_overloaded stream error"
+    }
+  ],
+  "supervised_attempt": 2,
+  "finished_at": "2026-10-07T04:24:14+08:00",
+  "results": "artifacts/bird-codex-20261007-001401/result.json"
+}
